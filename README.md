@@ -369,15 +369,6 @@ TouchEffect.Maui is fully accessible by default:
 
 **Windows**: Hover only works with mouse/pen, not touch input
 
-## Migration from Xamarin
-
-If migrating from Xamarin.Forms TouchEffect:
-
-1. Update namespace: `Xamarin.CommunityToolkit` → `MarketAlly.TouchEffect.Maui`
-2. Update package reference to `MarketAlly.TouchEffect.Maui`
-3. Add `.UseMauiTouchEffect()` in MauiProgram.cs
-4. Properties and behavior remain the same
-
 ## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
@@ -428,9 +419,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- 📖 [Documentation](https://github.com/MarketAlly/TouchEffect/wiki)
-- 🐛 [Report Issues](https://github.com/MarketAlly/TouchEffect/issues)
-- 💬 [Discussions](https://github.com/MarketAlly/TouchEffect/discussions)
+- 🐛 [Report Issues](https://github.com/MarketAlly/TouchEffect.Maui/issues)
 - ⭐ Star this repository if you find it helpful!
 
 ---
