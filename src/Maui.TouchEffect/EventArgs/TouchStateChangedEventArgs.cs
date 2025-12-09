@@ -1,5 +1,6 @@
-﻿using Maui.TouchEffect.Enums;
-namespace Maui.TouchEffect;
+using MarketAlly.TouchEffect.Maui.Enums;
+
+namespace MarketAlly.TouchEffect.Maui;
 
 public class TouchStateChangedEventArgs : EventArgs
 {

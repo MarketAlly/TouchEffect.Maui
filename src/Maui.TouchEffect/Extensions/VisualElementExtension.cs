@@ -1,4 +1,4 @@
-namespace Maui.TouchEffect.Extensions;
+namespace MarketAlly.TouchEffect.Maui.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="VisualElement" />.
@@ -51,7 +51,7 @@ public static class VisualElementExtension
 		}
 	}
 
-	internal static bool TryFindParentElementWithParentOfType<T>(this VisualElement element, out VisualElement result, out T parent) where T : VisualElement
+	internal static bool TryFindParentElementWithParentOfType<T>(this VisualElement? element, out VisualElement? result, out T? parent) where T : VisualElement
 	{
 		result = null;
 		parent = null;
@@ -73,7 +73,7 @@ public static class VisualElementExtension
 		return false;
 	}
 
-	internal static bool TryFindParentOfType<T>(this VisualElement element, out T parent) where T : VisualElement
+	internal static bool TryFindParentOfType<T>(this VisualElement element, out T? parent) where T : VisualElement
 	{
 		return element.TryFindParentElementWithParentOfType(out _, out parent);
 	}

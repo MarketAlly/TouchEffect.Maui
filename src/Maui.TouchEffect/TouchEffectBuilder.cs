@@ -1,9 +1,6 @@
 using System.Windows.Input;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
-using Maui.TouchEffect;
 
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 /// <summary>
 /// Fluent builder for configuring TouchEffect with a clean API.
@@ -15,21 +12,21 @@ public class TouchEffectBuilder
     private object? commandParameter;
     private ICommand? longPressCommand;
     private object? longPressCommandParameter;
-    private int longPressDuration = 500; // Default long press duration
+    private int longPressDuration = TouchEffectConstants.Defaults.LongPressDuration;
 
     // Visual properties
-    private double pressedOpacity = 1.0;
-    private double pressedScale = 1.0;
+    private double pressedOpacity = TouchEffectConstants.Defaults.Opacity;
+    private double pressedScale = TouchEffectConstants.Defaults.Scale;
     private Color? pressedBackgroundColor;
-    private double hoveredOpacity = 1.0;
-    private double hoveredScale = 1.0;
+    private double hoveredOpacity = TouchEffectConstants.Defaults.Opacity;
+    private double hoveredScale = TouchEffectConstants.Defaults.Scale;
     private Color? hoveredBackgroundColor;
-    private double normalOpacity = 1.0;
-    private double normalScale = 1.0;
+    private double normalOpacity = TouchEffectConstants.Defaults.Opacity;
+    private double normalScale = TouchEffectConstants.Defaults.Scale;
     private Color? normalBackgroundColor;
 
     // Animation properties
-    private int animationDuration = 150;
+    private int animationDuration = TouchEffectConstants.PresetDurations.Normal;
     private Easing? animationEasing;
     private int pressedAnimationDuration;
     private Easing? pressedAnimationEasing;
@@ -40,11 +37,11 @@ public class TouchEffectBuilder
     // Native animation properties
     private bool nativeAnimation;
     private Color? nativeAnimationColor;
-    private int nativeAnimationRadius = -1;
+    private int nativeAnimationRadius = TouchEffectConstants.Defaults.NativeAnimationRadius;
 
     // Other properties
     private bool? isToggled;
-    private int disallowTouchThreshold = 10;
+    private int disallowTouchThreshold = TouchEffectConstants.Defaults.DisallowTouchThreshold;
     private bool isAvailable = true;
 
     /// <summary>
@@ -277,7 +274,7 @@ public class TouchEffectBuilder
     public TouchEffectBuilder AsButton()
     {
         return WithPressedOpacity(0.7)
-            .WithAnimation(100, Easing.CubicOut);
+            .WithAnimation(TouchEffectConstants.PresetDurations.Fast, Easing.CubicOut);
     }
 
     /// <summary>
@@ -286,7 +283,7 @@ public class TouchEffectBuilder
     public TouchEffectBuilder AsCard()
     {
         return WithPressedScale(0.97)
-            .WithAnimation(150, Easing.CubicInOut)
+            .WithAnimation(TouchEffectConstants.PresetDurations.Normal, Easing.CubicInOut)
             .WithHoveredScale(1.02);
     }
 
@@ -296,7 +293,7 @@ public class TouchEffectBuilder
     public TouchEffectBuilder AsListItem()
     {
         return WithPressedBackgroundColor(Colors.LightGray.WithAlpha(0.3f))
-            .WithAnimation(50);
+            .WithAnimation(TouchEffectConstants.PresetDurations.VeryFast);
     }
 
     /// <summary>
@@ -306,7 +303,7 @@ public class TouchEffectBuilder
     {
         return WithPressedScale(0.9)
             .WithPressedOpacity(0.8)
-            .WithAnimation(100, Easing.SpringOut)
+            .WithAnimation(TouchEffectConstants.PresetDurations.Fast, Easing.SpringOut)
             .WithNativeAnimation();
     }
 

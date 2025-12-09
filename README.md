@@ -3,26 +3,38 @@
 [![NuGet](https://img.shields.io/nuget/v/MarketAlly.TouchEffect.Maui.svg)](https://www.nuget.org/packages/MarketAlly.TouchEffect.Maui)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MarketAlly.TouchEffect.Maui.svg)](https://www.nuget.org/packages/MarketAlly.TouchEffect.Maui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-blue.svg)](https://dotnet.microsoft.com/)
 
 A comprehensive touch effect library for .NET MAUI applications by **MarketAlly**, providing rich interaction feedback and animations across all platforms. MarketAlly.TouchEffect.Maui brings advanced touch handling, hover states, long press detection, and smooth animations to any MAUI view.
 
+## What's New in v2.0.0
+
+- **.NET 10 Support** - Updated to target .NET 10 with latest MAUI
+- **TouchBehavior** - New Behavior-based API as modern alternative to Effects
+- **Thread-Safe Architecture** - Complete thread-safety overhaul with proper synchronization
+- **Enhanced Logging** - Integrated logging throughout with `ITouchEffectLogger` interface
+- **Improved Code Organization** - TouchEffect split into partial classes for maintainability
+- **Bug Fixes** - Fixed `ForceUpdateStateWithoutAnimation` to actually disable animations
+- **Performance** - Replaced LINQ with for-loops in hot paths to reduce allocations
+
 ## Features
 
-### 🎯 Core Capabilities
+### Core Capabilities
 - **Universal Touch Feedback** - Consistent touch interactions across iOS, Android, and Windows
 - **50+ Customizable Properties** - Fine-grained control over every aspect of the touch experience
 - **Hardware-Accelerated Animations** - Smooth, performant transitions using platform-native acceleration
 - **Accessibility First** - Full keyboard, screen reader, and assistive technology support
 - **Memory Efficient** - WeakEventManager pattern prevents memory leaks
+- **Thread-Safe** - Proper synchronization for animation state management
 
-### 🎨 Visual Effects
+### Visual Effects
 - **Opacity Animations** - Fade effects on touch with customizable values
 - **Scale Transformations** - Grow or shrink elements during interaction
 - **Color Transitions** - Dynamic background color changes for different states
 - **Translation & Rotation** - Move and rotate elements during touch
 - **Native Platform Effects** - Android ripple effects and iOS haptic feedback
 
-### 🔧 Advanced Features
+### Advanced Features
 - **Long Press Detection** - Configurable duration with separate command binding
 - **Hover Support** - Mouse and stylus hover states on supported platforms
 - **Toggle Behavior** - Switch-like functionality with persistent state
@@ -36,24 +48,24 @@ A comprehensive touch effect library for .NET MAUI applications by **MarketAlly*
 | iOS         | 13.0+      | Full support with haptic feedback                |
 | Android     | API 24+    | Full support with native ripple effects          |
 | Windows     | 10.0.17763+ | Full support with WinUI 3 animations            |
-| Mac Catalyst| ❌         | Not currently supported                          |
-| Tizen       | ❌         | Not currently supported                          |
+| Mac Catalyst| -          | Not currently supported                          |
+| Tizen       | -          | Not currently supported                          |
 
 ## Installation
 
 ### Package Manager
 ```bash
-Install-Package MarketAlly.TouchEffect.Maui -Version 1.0.0
+Install-Package MarketAlly.TouchEffect.Maui -Version 2.0.0
 ```
 
 ### .NET CLI
 ```bash
-dotnet add package MarketAlly.TouchEffect.Maui --version 1.0.0
+dotnet add package MarketAlly.TouchEffect.Maui --version 2.0.0
 ```
 
 ### PackageReference
 ```xml
-<PackageReference Include="MarketAlly.TouchEffect.Maui" Version="1.0.0" />
+<PackageReference Include="MarketAlly.TouchEffect.Maui" Version="2.0.0" />
 ```
 
 ## Quick Start
@@ -85,7 +97,7 @@ public static class MauiProgram
 
 ### 2. Add Touch Effects to Your Views
 
-#### XAML Approach
+#### XAML Approach (Attached Properties)
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -124,7 +136,28 @@ public static class MauiProgram
 </ContentPage>
 ```
 
-#### 🆕 Fluent Builder Approach (New!)
+#### NEW: TouchBehavior Approach (v2.0.0)
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:touch="clr-namespace:MarketAlly.TouchEffect.Maui;assembly=MarketAlly.TouchEffect.Maui"
+             x:Class="YourApp.MainPage">
+
+    <Button Text="Click Me">
+        <Button.Behaviors>
+            <touch:TouchBehavior
+                PressedScale="0.95"
+                PressedOpacity="0.8"
+                AnimationDuration="100"
+                Command="{Binding TapCommand}" />
+        </Button.Behaviors>
+    </Button>
+</ContentPage>
+```
+
+#### Fluent Builder Approach
 
 ```csharp
 using MarketAlly.TouchEffect.Maui;
@@ -148,7 +181,7 @@ var listItem = new StackLayout()
     .WithListItemPreset();
 ```
 
-#### 🆕 Using Presets (New!)
+#### Using Presets
 
 ```csharp
 // Apply common UI patterns instantly
@@ -163,55 +196,34 @@ myCard.WithCardPreset();
 myListItem.WithListItemPreset();
 ```
 
-## 🆕 New Features in v1.0.0
+## Logging Configuration
 
-### Fluent Builder Pattern
-Configure touch effects with a clean, chainable API:
-
-```csharp
-element.ConfigureTouchEffect()
-    .WithPressedScale(0.95)
-    .WithPressedOpacity(0.7)
-    .WithAnimation(100, Easing.CubicOut)
-    .WithCommand(tapCommand)
-    .Build();
-```
-
-### Preset Configurations
-Pre-built configurations for common UI patterns:
-
-- **Button Presets**: Primary, Secondary, Text
-- **Card Presets**: Standard, Elevated, Interactive
-- **List Item Presets**: Standard, Selectable, Swipeable
-- **Icon Button Presets**: Standard, FAB, Toolbar
-- **Toggle Presets**: Standard, Checkbox
-- **Image Presets**: Thumbnail, Gallery, Avatar
-- **Native Effects**: Ripple, Haptic
-- **Special Effects**: Pulse, Bounce, Shake
-
-### Centralized Constants
-All magic numbers replaced with semantic constants:
+Configure logging to debug touch effect issues:
 
 ```csharp
-TouchEffectConstants.Defaults.LongPressDuration // 500ms
-TouchEffectConstants.Animation.TargetFrameRate  // 60fps
-TouchEffectConstants.Platform.Android.MinRippleRadius // 48dp
-```
+// Use the default console logger
+TouchEffect.SetLogger(new DefaultTouchEffectLogger());
 
-### Enhanced Error Handling
-Comprehensive logging interface for debugging:
-
-```csharp
-// Implement custom logging
+// Or implement custom logging
 public class MyLogger : ITouchEffectLogger
 {
     public void LogError(Exception ex, string context, string? info = null)
     {
-        // Log to your preferred service
+        // Log to your preferred service (App Center, Sentry, etc.)
+    }
+
+    public void LogWarning(string message, string context)
+    {
+        Debug.WriteLine($"[TouchEffect Warning] {context}: {message}");
+    }
+
+    public void LogInfo(string message, string context)
+    {
+        // Optional info logging
     }
 }
 
-// Configure in your app
+// Configure in your app startup
 TouchEffect.SetLogger(new MyLogger());
 ```
 
@@ -249,79 +261,20 @@ TouchEffect.SetLogger(new MyLogger());
        touch:TouchEffect.LongPressDuration="500" />
 ```
 
-## Properties Reference
+## API Reference
 
-### State Properties
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| IsAvailable | bool | true | Enables/disables the effect |
-| IsToggled | bool? | null | Toggle state (null = no toggle behavior) |
-| Status | TouchStatus | Completed | Current touch status |
-| State | TouchState | Normal | Current touch state |
+For complete API documentation, see [API_Reference.md](API_Reference.md).
 
-### Animation Properties
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| AnimationDuration | int | 0 | Animation duration in milliseconds |
-| AnimationEasing | Easing | null | Animation easing function |
-| PulseCount | int | 0 | Number of pulse repetitions (-1 for infinite) |
+### Quick Reference
 
-### Visual Properties
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| PressedOpacity | double | 1.0 | Opacity when pressed |
-| PressedScale | double | 1.0 | Scale when pressed |
-| PressedBackgroundColor | Color | Default | Background color when pressed |
-| HoveredOpacity | double | 1.0 | Opacity when hovered |
-| HoveredScale | double | 1.0 | Scale when hovered |
-| NormalOpacity | double | 1.0 | Normal state opacity |
-
-### Command Properties
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| Command | ICommand | null | Command to execute on tap |
-| CommandParameter | object | null | Parameter for command |
-| LongPressCommand | ICommand | null | Command for long press |
-| LongPressDuration | int | 500 | Long press duration in ms |
-
-### Platform-Specific Properties
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| NativeAnimation | bool | false | Use platform native animations |
-| NativeAnimationColor | Color | Default | Native animation color |
-| NativeAnimationRadius | int | -1 | Animation radius (Android/iOS) |
-
-## Events
-
-```csharp
-public partial class MyPage : ContentPage
-{
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-
-        // Subscribe to events
-        TouchEffect.SetStatusChanged(MyView, OnTouchStatusChanged);
-        TouchEffect.SetStateChanged(MyView, OnTouchStateChanged);
-        TouchEffect.SetCompleted(MyView, OnTouchCompleted);
-    }
-
-    void OnTouchStatusChanged(object sender, TouchStatusChangedEventArgs e)
-    {
-        Debug.WriteLine($"Touch Status: {e.Status}");
-    }
-
-    void OnTouchStateChanged(object sender, TouchStateChangedEventArgs e)
-    {
-        Debug.WriteLine($"Touch State: {e.State}");
-    }
-
-    void OnTouchCompleted(object sender, TouchCompletedEventArgs e)
-    {
-        Debug.WriteLine("Touch completed!");
-    }
-}
-```
+| Category | Key Properties |
+|----------|---------------|
+| **State** | `IsAvailable`, `IsToggled`, `Status`, `State` |
+| **Commands** | `Command`, `CommandParameter`, `LongPressCommand`, `LongPressDuration` |
+| **Visual** | `PressedOpacity`, `PressedScale`, `PressedBackgroundColor` |
+| **Hover** | `HoveredOpacity`, `HoveredScale`, `HoveredBackgroundColor` |
+| **Animation** | `AnimationDuration`, `AnimationEasing`, `PulseCount` |
+| **Native** | `NativeAnimation`, `NativeAnimationColor`, `NativeAnimationRadius` |
 
 ## Performance Tips
 
@@ -335,10 +288,10 @@ public partial class MyPage : ContentPage
 
 TouchEffect.Maui is fully accessible by default:
 
-- ✅ **Keyboard Navigation** - Full support for Tab, Enter, and Space keys
-- ✅ **Screen Readers** - Compatible with VoiceOver, TalkBack, and Narrator
-- ✅ **Focus Indicators** - Proper focus visualization
-- ✅ **Touch Exploration** - Support for accessibility touch modes
+- **Keyboard Navigation** - Full support for Tab, Enter, and Space keys
+- **Screen Readers** - Compatible with VoiceOver, TalkBack, and Narrator
+- **Focus Indicators** - Proper focus visualization
+- **Touch Exploration** - Support for accessibility touch modes
 
 ```xml
 <!-- Accessible button with semantic properties -->
@@ -355,6 +308,7 @@ TouchEffect.Maui is fully accessible by default:
 - Verify `IsAvailable` is true
 - Check parent view `InputTransparent` settings
 - Ensure view has appropriate size (not 0x0)
+- Enable logging to see detailed diagnostics
 
 ### Animations Stuttering
 - Reduce `AnimationDuration`
@@ -377,7 +331,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/felipebaltazar/TouchEffect.git
+git clone https://github.com/MarketAlly/TouchEffect.git
 
 # Build the project
 dotnet build src/Maui.TouchEffect/TouchEffect.Maui.csproj
@@ -391,15 +345,25 @@ dotnet pack src/Maui.TouchEffect/TouchEffect.Maui.csproj
 
 ## Changelog
 
+### Version 2.0.0 (2025-01)
+- **.NET 10 Support**: Updated to target .NET 10 with latest MAUI packages
+- **TouchBehavior**: New `TouchBehavior` class as modern Behavior-based alternative to Effects
+- **Thread-Safety**: Complete overhaul with proper `lock` synchronization in `GestureManager`
+- **Logging Integration**: Full logging throughout codebase via `ITouchEffectLogger`
+- **Code Organization**: `TouchEffect` split into partial classes (Core, Properties, Accessors)
+- **Bug Fix**: `ForceUpdateStateWithoutAnimation` now correctly passes `animated: false`
+- **Performance**: Replaced LINQ with for-loops in hot paths (`HasTouchEffect`, `GetFrom`, `PickFrom`)
+- **CancellationToken Disposal**: Proper null-before-dispose pattern to prevent race conditions
+
 ### Version 1.0.0 (2024-11)
-- 🆕 **Fluent Builder Pattern**: New intuitive API for configuring touch effects
-- 🆕 **Preset Configurations**: 20+ pre-built configurations for common UI patterns
-- 🆕 **Centralized Constants**: Eliminated magic numbers throughout codebase
-- 🆕 **Logging Interface**: Comprehensive error handling and debugging support
-- 🆕 **Windows Support**: Full Windows platform implementation with WinUI 3
-- ✨ **Code Quality**: Partial classes, improved organization, and documentation
-- 🐛 **Bug Fixes**: Fixed .NET 9 compatibility issues
-- 📝 **Documentation**: Enhanced XML documentation for all public APIs
+- Fluent Builder Pattern: New intuitive API for configuring touch effects
+- Preset Configurations: 20+ pre-built configurations for common UI patterns
+- Centralized Constants: Eliminated magic numbers throughout codebase
+- Logging Interface: Comprehensive error handling and debugging support
+- Windows Support: Full Windows platform implementation with WinUI 3
+- Code Quality: Partial classes, improved organization, and documentation
+- Bug Fixes: Fixed .NET 9 compatibility issues
+- Documentation: Enhanced XML documentation for all public APIs
 
 ### Version 8.1.0
 - Initial release as MarketAlly.TouchEffect.Maui
@@ -412,18 +376,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Based on the original [TouchEffect](https://github.com/felipebaltazar/TouchEffect) by Andrei (MIT License)
+- Based on the original [TouchEffect](https://github.com/AbuMandworking/TouchEffect) by Andrei (MIT License)
 - Original [Xamarin Community Toolkit](https://github.com/xamarin/XamarinCommunityToolkit) team
 - [.NET MAUI](https://github.com/dotnet/maui) team
 - All [contributors](https://github.com/MarketAlly/TouchEffect/graphs/contributors)
 
 ## Support
 
-- 🐛 [Report Issues](https://github.com/MarketAlly/TouchEffect.Maui/issues)
-- ⭐ Star this repository if you find it helpful!
+- [Report Issues](https://github.com/MarketAlly/TouchEffect.Maui/issues)
+- Star this repository if you find it helpful!
 
 ---
 
-Made with ❤️ by **MarketAlly** for the .NET MAUI Community
+Made with care by **MarketAlly** for the .NET MAUI Community
 
 *Based on the original TouchEffect by Andrei - Used under MIT License*

@@ -7,17 +7,21 @@ using Android.Views.Accessibility;
 using Android.Widget;
 using Microsoft.Maui.Platform;
 using System.ComponentModel;
+using MarketAlly.TouchEffect.Maui.Enums;
 using AView = Android.Views.View;
 using Color = Android.Graphics.Color;
 using Mview = Microsoft.Maui.Controls.View;
 using Mcolor = Microsoft.Maui.Graphics.Color;
-using Maui.TouchEffect.Enums;
 
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffect
 {
-    private static readonly Mcolor defaultNativeAnimationColor = new(128, 128, 128, 64);
+    private static readonly Mcolor defaultNativeAnimationColor = new(
+        TouchEffectConstants.Platform.Android.DefaultRippleColor,
+        TouchEffectConstants.Platform.Android.DefaultRippleColor,
+        TouchEffectConstants.Platform.Android.DefaultRippleColor,
+        TouchEffectConstants.Platform.Android.DefaultRippleAlpha);
 
     AccessibilityManager? accessibilityManager;
     AccessibilityListener? accessibilityListener;
@@ -28,7 +32,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
     float startX;
     float startY;
     Mcolor? rippleColor;
-    int rippleRadius = -1;
+    int rippleRadius = TouchEffectConstants.Defaults.NativeAnimationRadius;
 
     AView view => Control ?? Container;
 
@@ -139,9 +143,9 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
             ripple?.Dispose();
             ripple = null;
         }
-        catch (ObjectDisposedException)
+        catch (ObjectDisposedException ex)
         {
-            // Suppress exception
+            TouchEffect.Logger.LogWarning($"Object already disposed during OnDetached: {ex.Message}", "PlatformTouchEffect.Android");
         }
         isHoverSupported = false;
     }
@@ -166,7 +170,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
         }
     }
 
-    void OnTouch(object sender, AView.TouchEventArgs e)
+    void OnTouch(object? sender, AView.TouchEventArgs e)
     {
         e.Handled = false;
 
@@ -223,7 +227,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
     void OnTouchCancel()
         => HandleEnd(TouchStatus.Canceled);
 
-    void OnTouchMove(object sender, AView.TouchEventArgs e)
+    void OnTouchMove(object? sender, AView.TouchEventArgs e)
     {
         if (IsCanceled || e.Event == null)
             return;
@@ -273,7 +277,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
         effect?.HandleHover(HoverStatus.Exited);
     }
 
-    void OnClick(object sender, System.EventArgs args)
+    void OnClick(object? sender, System.EventArgs args)
     {
         if (effect?.IsDisabled ?? true)
             return;
@@ -385,7 +389,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
             new[] { (int)nativeAnimationColor.ToPlatform() });
     }
 
-    void OnLayoutChange(object sender, AView.LayoutChangeEventArgs e)
+    void OnLayoutChange(object? sender, AView.LayoutChangeEventArgs e)
     {
         if (sender is not AView layoutView || group == null || rippleView == null)
             return;
@@ -398,7 +402,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
                                          AccessibilityManager.IAccessibilityStateChangeListener,
                                          AccessibilityManager.ITouchExplorationStateChangeListener
     {
-        PlatformTouchEffect platformTouchEffect;
+        PlatformTouchEffect? platformTouchEffect;
 
         internal AccessibilityListener(PlatformTouchEffect platformTouchEffect)
             => this.platformTouchEffect = platformTouchEffect;

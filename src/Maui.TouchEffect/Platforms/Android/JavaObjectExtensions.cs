@@ -1,4 +1,4 @@
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 internal static class JavaObjectExtensions
 {

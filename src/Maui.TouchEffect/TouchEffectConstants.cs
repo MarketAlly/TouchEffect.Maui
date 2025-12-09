@@ -1,4 +1,4 @@
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 /// <summary>
 /// Constants used throughout the TouchEffect library.

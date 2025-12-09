@@ -1,5 +1,5 @@
-using Maui.TouchEffect.Enums;
-using MauiTouchEffect.Extensions;
+using MarketAlly.TouchEffect.Maui.Enums;
+using MarketAlly.TouchEffect.Maui.Extensions;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -13,7 +13,7 @@ using WinBrush = Microsoft.UI.Xaml.Media.Brush;
 using WinSolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
 using WinPoint = Windows.Foundation.Point;
 
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffect
 {
@@ -98,9 +98,9 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
             _effect = null;
             _view = null;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Suppress exceptions during cleanup
+            TouchEffect.Logger.LogError(ex, "PlatformTouchEffect.Windows.OnDetached", "Error during cleanup");
         }
     }
 
@@ -193,9 +193,9 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
         {
             _view.CapturePointer(e.Pointer);
         }
-        catch
+        catch (Exception ex)
         {
-            // Some controls may not support pointer capture
+            TouchEffect.Logger.LogWarning($"Failed to capture pointer: {ex.Message}", "PlatformTouchEffect.Windows");
         }
 
         // Handle the touch interaction
@@ -224,14 +224,16 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
             {
                 _view?.ReleasePointerCapture(e.Pointer);
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore capture release errors
+                TouchEffect.Logger.LogWarning($"Failed to release pointer capture: {ex.Message}", "PlatformTouchEffect.Windows");
             }
 
             // Determine if this is a completed tap or canceled
             var distance = CalculateDistance(_startPoint, pointer.Position);
-            var threshold = _effect.DisallowTouchThreshold > 0 ? _effect.DisallowTouchThreshold : 20;
+            var threshold = _effect.DisallowTouchThreshold > 0
+                ? _effect.DisallowTouchThreshold
+                : TouchEffectConstants.Platform.Windows.DefaultMovementThreshold;
 
             if (distance <= threshold)
             {
@@ -266,7 +268,9 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
 
         var pointer = e.GetCurrentPoint(_view);
         var distance = CalculateDistance(_startPoint, pointer.Position);
-        var threshold = _effect.DisallowTouchThreshold > 0 ? _effect.DisallowTouchThreshold : 20;
+        var threshold = _effect.DisallowTouchThreshold > 0
+            ? _effect.DisallowTouchThreshold
+            : TouchEffectConstants.Platform.Windows.DefaultMovementThreshold;
 
         // Cancel if moved too far
         if (distance > threshold)
@@ -368,10 +372,10 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
 
         // Determine target values based on state
         double targetOpacity = _originalOpacity;
-        double targetScale = 1.0;
-        double targetTranslationX = 0;
-        double targetTranslationY = 0;
-        double targetRotation = 0;
+        double targetScale = TouchEffectConstants.Defaults.Scale;
+        double targetTranslationX = TouchEffectConstants.Defaults.TranslationX;
+        double targetTranslationY = TouchEffectConstants.Defaults.TranslationY;
+        double targetRotation = TouchEffectConstants.Defaults.Rotation;
         WinBrush? targetBrush = _originalBrush;
 
         if (_isPressed && _effect.State == TouchState.Pressed)
@@ -540,7 +544,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
         // Handle pulse/ripple count
         if (_effect?.PulseCount != 0)
         {
-            var pulseCount = _effect?.PulseCount ?? 0;
+            var pulseCount = _effect?.PulseCount ?? TouchEffectConstants.Defaults.PulseCount;
             if (pulseCount < 0)
             {
                 storyboard.RepeatBehavior = RepeatBehavior.Forever;
@@ -558,7 +562,7 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
     private int GetAnimationDuration()
     {
         if (_effect == null)
-            return 0;
+            return TouchEffectConstants.Animation.DefaultDuration;
 
         // Determine which animation duration to use
         if (_isPressed)
@@ -656,34 +660,48 @@ public class PlatformTouchEffect : Microsoft.Maui.Controls.Platform.PlatformEffe
         if (_effect == null || _effect.LongPressCommand == null)
             return;
 
-        _longPressCts?.Cancel();
+        CancelLongPressDetection();
         _longPressCts = new System.Threading.CancellationTokenSource();
 
         try
         {
-            var duration = _effect.LongPressDuration > 0 ? _effect.LongPressDuration : 500;
+            var duration = _effect.LongPressDuration > 0
+                ? _effect.LongPressDuration
+                : TouchEffectConstants.Defaults.LongPressDuration;
             await Task.Delay(duration, _longPressCts.Token);
 
             if (!_longPressCts.Token.IsCancellationRequested && _isPressed)
             {
                 _effect.RaiseLongPressCompleted();
-
-                // Optional: Provide haptic feedback if available
-                // Windows doesn't have built-in haptic API like mobile platforms
-                // Could potentially use Windows.Devices.Haptics if available
             }
         }
         catch (TaskCanceledException)
         {
             // Expected when gesture is canceled
         }
+        catch (Exception ex)
+        {
+            TouchEffect.Logger.LogError(ex, "PlatformTouchEffect.Windows.StartLongPressDetection", "Error during long press detection");
+        }
     }
 
     private void CancelLongPressDetection()
     {
-        _longPressCts?.Cancel();
-        _longPressCts?.Dispose();
+        var cts = _longPressCts;
         _longPressCts = null;
+
+        if (cts != null)
+        {
+            try
+            {
+                cts.Cancel();
+                cts.Dispose();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Already disposed
+            }
+        }
     }
 
     #endregion

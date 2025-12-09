@@ -1,21 +1,21 @@
 using CoreGraphics;
 using Foundation;
-using Maui.TouchEffect.Enums;
-using MauiTouchEffect.Extensions;
+using MarketAlly.TouchEffect.Maui.Enums;
+using MarketAlly.TouchEffect.Maui.Extensions;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Platform;
 using UIKit;
 
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 public partial class PlatformTouchEffect : PlatformEffect
 {
     private UIGestureRecognizer? touchGesture;
     private UIGestureRecognizer? hoverGesture;
-    
+
     TouchEffect? effect;
     UIView View => Container ?? Control;
-    
+
     protected override void OnAttached()
     {
         effect = TouchEffect.PickFrom(Element);
@@ -37,7 +37,7 @@ public partial class PlatformTouchEffect : PlatformEffect
 
         View.AddGestureRecognizer(touchGesture);
 
-        if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+        if (UIDevice.CurrentDevice.CheckSystemVersion(TouchEffectConstants.Platform.iOS.MinHoverGestureVersion, 0))
         {
             hoverGesture = new UIHoverGestureRecognizer(OnHover);
             View.AddGestureRecognizer(hoverGesture);
@@ -104,7 +104,7 @@ public partial class PlatformTouchEffect : PlatformEffect
 
 internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 {
-	private TouchEffect touchEffect;
+	private TouchEffect? touchEffect;
 	private float? defaultRadius;
 	private float? defaultShadowRadius;
 	private float? defaultShadowOpacity;
@@ -131,7 +131,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 		IsCanceled = false;
 		startPoint = GetTouchPoint(touches);
 
-		HandleTouch(TouchStatus.Started, TouchInteractionStatus.Started).SafeFireAndForget();
+		HandleTouch(TouchStatus.Started, TouchInteractionStatus.Started).SafeFireAndForget(
+			ex => TouchEffect.Logger.LogError(ex, "TouchesBegan", "Error handling touch start"));
 
 		base.TouchesBegan(touches, evt);
 	}
@@ -143,7 +144,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 			return;
 		}
 
-		HandleTouch(touchEffect?.Status == TouchStatus.Started ? TouchStatus.Completed : TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget();
+		HandleTouch(touchEffect?.Status == TouchStatus.Started ? TouchStatus.Completed : TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget(
+			ex => TouchEffect.Logger.LogError(ex, "TouchesEnded", "Error handling touch end"));
 
 		IsCanceled = true;
 
@@ -157,7 +159,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 			return;
 		}
 
-		HandleTouch(TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget();
+		HandleTouch(TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget(
+			ex => TouchEffect.Logger.LogError(ex, "TouchesCancelled", "Error handling touch cancel"));
 
 		IsCanceled = true;
 
@@ -180,7 +183,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 			var maxDiff = Math.Max(diffX, diffY);
 			if (maxDiff > disallowTouchThreshold)
 			{
-				HandleTouch(TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget();
+				HandleTouch(TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget(
+					ex => TouchEffect.Logger.LogError(ex, "TouchesMoved", "Error handling touch cancel from threshold"));
 				IsCanceled = true;
 				base.TouchesMoved(touches, evt);
 				return;
@@ -193,7 +197,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 
 		if (touchEffect?.Status != status)
 		{
-			HandleTouch(status).SafeFireAndForget();
+			HandleTouch(status).SafeFireAndForget(
+				ex => TouchEffect.Logger.LogError(ex, "TouchesMoved", "Error handling touch status change"));
 		}
 
 		if (status == TouchStatus.Canceled)
@@ -254,7 +259,7 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 				else
                 {
                     var backgroundColor = touchEffect.Element.BackgroundColor ?? Colors.Transparent;
-                    
+
 					View.Layer.BackgroundColor = (isStarted ? color : backgroundColor).ToCGColor();
 				}
 
@@ -273,7 +278,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 	{
 		if (disposing)
 		{
-			Delegate.Dispose();
+			Delegate?.Dispose();
+			touchEffect = null;
 		}
 
 		base.Dispose(disposing);
@@ -291,7 +297,8 @@ internal sealed class TouchUITapGestureRecognizer : UIGestureRecognizer
 			if (gestureRecognizer is TouchUITapGestureRecognizer touchGesture && otherGestureRecognizer is UIPanGestureRecognizer &&
 			    otherGestureRecognizer.State == UIGestureRecognizerState.Began)
 			{
-				touchGesture.HandleTouch(TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget();
+				touchGesture.HandleTouch(TouchStatus.Canceled, TouchInteractionStatus.Completed).SafeFireAndForget(
+					ex => TouchEffect.Logger.LogError(ex, "ShouldRecognizeSimultaneously", "Error handling touch cancel"));
 				touchGesture.IsCanceled = true;
 			}
 

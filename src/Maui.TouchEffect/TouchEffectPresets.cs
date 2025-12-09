@@ -1,7 +1,4 @@
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Graphics;
-
-namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 /// <summary>
 /// Predefined TouchEffect configurations for common UI patterns.
@@ -19,7 +16,7 @@ public static class TouchEffectPresets
         public static void Apply(VisualElement element)
         {
             TouchEffect.SetPressedOpacity(element, 0.7);
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.CubicOut);
         }
 
@@ -30,7 +27,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedOpacity(element, 0.8);
             TouchEffect.SetPressedScale(element, 0.95);
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.CubicOut);
         }
 
@@ -40,7 +37,7 @@ public static class TouchEffectPresets
         public static void ApplySecondary(VisualElement element)
         {
             TouchEffect.SetPressedOpacity(element, 0.6);
-            TouchEffect.SetAnimationDuration(element, 50); // Very Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.VeryFast);
         }
 
         /// <summary>
@@ -49,7 +46,7 @@ public static class TouchEffectPresets
         public static void ApplyText(VisualElement element)
         {
             TouchEffect.SetPressedOpacity(element, 0.5);
-            TouchEffect.SetAnimationDuration(element, 25); // Instant
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Instant);
         }
     }
 
@@ -64,7 +61,7 @@ public static class TouchEffectPresets
         public static void Apply(VisualElement element)
         {
             TouchEffect.SetPressedScale(element, 0.97);
-            TouchEffect.SetAnimationDuration(element, 150); // Normal
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Normal);
             TouchEffect.SetAnimationEasing(element, Easing.CubicInOut);
         }
 
@@ -75,10 +72,10 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedScale(element, 0.95);
             TouchEffect.SetPressedOpacity(element, 0.9);
-            TouchEffect.SetAnimationDuration(element, 150); // Normal
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Normal);
             TouchEffect.SetAnimationEasing(element, Easing.CubicInOut);
             TouchEffect.SetHoveredScale(element, 1.02);
-            TouchEffect.SetHoveredAnimationDuration(element, 200); // Slow
+            TouchEffect.SetHoveredAnimationDuration(element, TouchEffectConstants.PresetDurations.Slow);
         }
 
         /// <summary>
@@ -89,7 +86,7 @@ public static class TouchEffectPresets
             TouchEffect.SetPressedScale(element, 0.98);
             TouchEffect.SetHoveredScale(element, 1.01);
             TouchEffect.SetHoveredBackgroundColor(element, Colors.Gray.WithAlpha(0.1f));
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.CubicOut);
         }
     }
@@ -105,7 +102,7 @@ public static class TouchEffectPresets
         public static void Apply(VisualElement element)
         {
             TouchEffect.SetPressedBackgroundColor(element, Colors.Gray.WithAlpha(0.2f));
-            TouchEffect.SetAnimationDuration(element, 50); // Very Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.VeryFast);
         }
 
         /// <summary>
@@ -115,7 +112,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetIsToggled(element, false);
             TouchEffect.SetPressedBackgroundColor(element, Colors.Blue.WithAlpha(0.3f));
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
         }
 
         /// <summary>
@@ -125,7 +122,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedScale(element, 0.98);
             TouchEffect.SetPressedBackgroundColor(element, Colors.Gray.WithAlpha(0.1f));
-            TouchEffect.SetAnimationDuration(element, 50); // Very Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.VeryFast);
         }
     }
 
@@ -141,7 +138,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedScale(element, 0.85);
             TouchEffect.SetPressedOpacity(element, 0.7);
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.SpringOut);
         }
 
@@ -152,7 +149,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedScale(element, 0.9);
             TouchEffect.SetPressedOpacity(element, 0.8);
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.SpringOut);
             TouchEffect.SetNativeAnimation(element, true);
         }
@@ -163,7 +160,7 @@ public static class TouchEffectPresets
         public static void ApplyToolbar(VisualElement element)
         {
             TouchEffect.SetPressedOpacity(element, 0.5);
-            TouchEffect.SetAnimationDuration(element, 50); // Very Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.VeryFast);
         }
     }
 
@@ -179,7 +176,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetIsToggled(element, false);
             TouchEffect.SetPressedScale(element, 0.95);
-            TouchEffect.SetAnimationDuration(element, 150); // Normal
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Normal);
             TouchEffect.SetAnimationEasing(element, Easing.CubicInOut);
         }
 
@@ -190,7 +187,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetIsToggled(element, false);
             TouchEffect.SetPressedScale(element, 0.9);
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.BounceOut);
         }
     }
@@ -207,7 +204,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedScale(element, 0.95);
             TouchEffect.SetHoveredScale(element, 1.05);
-            TouchEffect.SetAnimationDuration(element, 150); // Normal
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Normal);
             TouchEffect.SetAnimationEasing(element, Easing.CubicInOut);
         }
 
@@ -219,7 +216,7 @@ public static class TouchEffectPresets
             TouchEffect.SetPressedScale(element, 0.98);
             TouchEffect.SetPressedOpacity(element, 0.8);
             TouchEffect.SetHoveredScale(element, 1.1);
-            TouchEffect.SetAnimationDuration(element, 200); // Slow
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Slow);
             TouchEffect.SetAnimationEasing(element, Easing.CubicInOut);
         }
 
@@ -230,7 +227,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedScale(element, 0.92);
             TouchEffect.SetPressedOpacity(element, 0.7);
-            TouchEffect.SetAnimationDuration(element, 100); // Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Fast);
             TouchEffect.SetAnimationEasing(element, Easing.CubicOut);
         }
     }
@@ -257,7 +254,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetNativeAnimation(element, true);
             TouchEffect.SetPressedOpacity(element, 0.8);
-            TouchEffect.SetAnimationDuration(element, 50); // Very Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.VeryFast);
         }
     }
 
@@ -274,7 +271,7 @@ public static class TouchEffectPresets
             TouchEffect.SetPressedScale(element, 1.1);
             TouchEffect.SetPressedOpacity(element, 0.7);
             TouchEffect.SetPulseCount(element, count);
-            TouchEffect.SetAnimationDuration(element, 150); // Normal
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Normal);
             TouchEffect.SetAnimationEasing(element, Easing.SinInOut);
         }
 
@@ -284,7 +281,7 @@ public static class TouchEffectPresets
         public static void ApplyBounce(VisualElement element)
         {
             TouchEffect.SetPressedScale(element, 0.8);
-            TouchEffect.SetAnimationDuration(element, 200); // Slow
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.Slow);
             TouchEffect.SetAnimationEasing(element, Easing.SpringOut);
         }
 
@@ -295,7 +292,7 @@ public static class TouchEffectPresets
         {
             TouchEffect.SetPressedRotation(element, 5);
             TouchEffect.SetPulseCount(element, 2);
-            TouchEffect.SetAnimationDuration(element, 50); // Very Fast
+            TouchEffect.SetAnimationDuration(element, TouchEffectConstants.PresetDurations.VeryFast);
             TouchEffect.SetAnimationEasing(element, Easing.BounceOut);
         }
 

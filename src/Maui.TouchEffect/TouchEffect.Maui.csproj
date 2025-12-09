@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
@@ -26,10 +26,10 @@
     <Description>Advanced touch effects for .NET MAUI applications. Features fluent builder API, 20+ preset configurations, Windows platform support, comprehensive logging, and rich interaction feedback with animations, hover states, and platform-specific effects. Enterprise-ready with zero magic numbers and extensive documentation. A MarketAlly product based on the original TouchEffect.</Description>
     <Copyright>Copyright © 2025 MarketAlly. Original TouchEffect Copyright © 2018 Andrei</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.0</AssemblyVersion>
-    <AssemblyFileVersion>1.0.0</AssemblyFileVersion>
-    <Version>1.0.0</Version>
-    <PackageReleaseNotes>v1.0.0: New fluent builder API, 20+ preset configurations, Windows platform support, centralized constants, enhanced error handling with logging interface, and comprehensive documentation. Fixed .NET 9 compatibility issues.</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+    <AssemblyFileVersion>2.0.0</AssemblyFileVersion>
+    <Version>2.0.0</Version>
+    <PackageReleaseNotes>v2.0.0: .NET 10 support, new TouchBehavior class (Behavior-based alternative to Effects), thread-safe architecture with proper synchronization, integrated logging via ITouchEffectLogger, code organization improvements (partial classes), ForceUpdateStateWithoutAnimation bug fix, performance improvements (LINQ replaced with for-loops in hot paths), proper CancellationTokenSource disposal pattern.</PackageReleaseNotes>
     <PackageIcon>icon.png</PackageIcon>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
@@ -39,8 +39,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
-    <None Include="..\..\LICENSE" Pack="true" PackagePath="\"/>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
     <None Include="icon.png">
       <Pack>true</Pack>
       <PackagePath>\</PackagePath>
@@ -50,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.82" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.11" />
   </ItemGroup>
 
 </Project>

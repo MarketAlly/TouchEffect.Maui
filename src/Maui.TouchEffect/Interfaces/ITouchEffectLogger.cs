@@ -1,6 +1,4 @@
-using System;
-
-namespace Maui.TouchEffect.Interfaces;
+namespace MarketAlly.TouchEffect.Maui.Interfaces;
 
 /// <summary>
 /// Interface for logging TouchEffect events and errors.
@@ -75,12 +73,6 @@ public class DefaultTouchEffectLogger : ITouchEffectLogger
 
         System.Diagnostics.Debug.WriteLine(message);
         System.Diagnostics.Debug.WriteLine($"Stack Trace: {exception.StackTrace}");
-
-        // In production, you might want to send this to a crash reporting service
-#if !DEBUG
-        // Example: AppCenter, Sentry, Application Insights, etc.
-        // CrashReporting.TrackError(exception, new Dictionary<string, string> { { "Context", context } });
-#endif
     }
 
     /// <inheritdoc/>
@@ -121,12 +113,6 @@ public class DefaultTouchEffectLogger : ITouchEffectLogger
         }
 
         System.Diagnostics.Debug.WriteLine(message);
-
-        // In production, you might want to send this to analytics
-#if !DEBUG
-        // Example: Application Insights, Google Analytics, etc.
-        // Analytics.TrackMetric(operationName, elapsedMilliseconds, additionalMetrics);
-#endif
     }
 }
 

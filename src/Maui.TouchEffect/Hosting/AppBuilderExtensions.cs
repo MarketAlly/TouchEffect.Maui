@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
-namespace Maui.TouchEffect.Hosting;
+
+namespace MarketAlly.TouchEffect.Maui.Hosting;
 
 public static class AppBuilderExtensions
 {

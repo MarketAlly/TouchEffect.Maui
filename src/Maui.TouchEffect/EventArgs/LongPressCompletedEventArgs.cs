@@ -1,4 +1,4 @@
-﻿namespace Maui.TouchEffect;
+namespace MarketAlly.TouchEffect.Maui;
 
 public class LongPressCompletedEventArgs : EventArgs
 {
